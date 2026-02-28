@@ -8,7 +8,7 @@ Implementing VAE to learn from existing popular sneaker designs for the fashion 
 - Danqing Chen
 - Wenbo Zhao
 
-**Live Demo Website**: [http://dfuaix9nq1.com/](http://dfuaix9nq1.com/)
+**Web App**: [http://dfuaix9nq1.com/](http://dfuaix9nq1.com/)
 
 This repository presents a full notebook-driven workflow for sneaker image generation using a Beta-VAE model, from preprocessing to interactive custom design.
 
