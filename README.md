@@ -7,8 +7,8 @@ This repository presents a full notebook-driven workflow for sneaker image gener
 ## Notebook Navigation
 
 1. [01 - Data Preprocessing](#01---data-preprocessing)
-2. [03 - Baseline Training (MSE + Fixed Beta)](#03---baseline-training-mse--fixed-beta)
-3. [04 - Improved Training (BCE + KL Annealing)](#04---improved-training-bce--kl-annealing)
+2. [02 - Baseline Training (MSE + Fixed Beta)](#02---baseline-training-mse--fixed-beta)
+3. [03 - Improved Training (BCE + KL Annealing)](#03---improved-training-bce--kl-annealing)
 4. [04 - Latent Analysis with Rich Visualizations](#04---latent-analysis-with-rich-visualizations)
 5. [05 - Interactive Custom Sneaker Design](#05---interactive-custom-sneaker-design)
 
@@ -33,7 +33,7 @@ Convert raw sneaker images into a clean model-ready dataset (`64 x 64`, RGB, whi
 
 ---
 
-## 03 - Baseline Training (MSE + Fixed Beta)
+## 02 - Baseline Training (MSE + Fixed Beta)
 
 **Notebook**: `notebooks/02_baseline_training.ipynb`
 
@@ -50,7 +50,7 @@ Train the first Beta-VAE baseline using:
 
 ---
 
-## 04 - Improved Training (BCE + KL Annealing)
+## 03 - Improved Training (BCE + KL Annealing)
 
 **Notebook**: `notebooks/03_improved_training_with_annealing.ipynb`
 
@@ -135,4 +135,3 @@ Provide direct user control over latent dimensions (`Dim0` to `Dim15`) to genera
 
 ### Final Reflection
 **[Content to be added here.]**
-
