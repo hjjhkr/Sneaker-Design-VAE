@@ -1,0 +1,19 @@
+name: sneaker-design-vae
+channels:
+  - pytorch
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pytorch::pytorch=2.2.2
+  - pytorch::torchvision=0.17.2
+  - numpy=1.26
+  - matplotlib
+  - pillow
+  - jupyterlab
+  - notebook
+  - ipykernel
+  - ipywidgets
+variables:
+  PYTHONWARNINGS: ignore
+  KMP_WARNINGS: "0"
+  MKL_VERBOSE: "0"

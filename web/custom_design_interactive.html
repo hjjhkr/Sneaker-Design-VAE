@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sneaker Latent Designer</title>
+  <style>
+    :root {
+      --bg: #f3f5f7;
+      --panel: #ffffff;
+      --ink: #1f2a33;
+      --muted: #5b6b78;
+      --accent: #1f7a8c;
+      --line: #dde4ea;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Avenir Next", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 10% 10%, #ffffff 0%, #eef2f6 50%, #e4eaef 100%);
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(26, 40, 52, 0.08);
+      padding: 16px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      letter-spacing: 0.2px;
+    }
+
+    .sub {
+      color: var(--muted);
+      margin: 0 0 18px;
+      font-size: 14px;
+    }
+
+    .rows {
+      display: grid;
+      gap: 10px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 70px 1fr 88px;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dim-label {
+      font-weight: 600;
+      color: #2b3944;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #c8d3dd;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-generate { background: #1f7a8c; color: #fff; }
+    .btn-reset { background: #f3b61f; color: #2a1f00; }
+    .btn-random { background: #72a98f; color: #fff; }
+    .btn-download { background: #e3e8ee; color: #24313c; }
+
+    .status {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 18px;
+    }
+
+    .preview {
+      display: grid;
+      place-items: center;
+      min-height: 420px;
+      background: #f8fbfd;
+      border: 1px dashed #c6d3de;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .preview img {
+      max-width: 100%;
+      width: 420px;
+      height: 420px;
+      object-fit: contain;
+      image-rendering: auto;
+      display: none;
+    }
+
+    .placeholder {
+      color: #607485;
+      font-size: 14px;
+      text-align: center;
+      padding: 12px;
+    }
+
+    .meta {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #657887;
+    }
+
+    @media (max-width: 900px) {
+      .wrap {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="card">
+      <h1>Interactive Sneaker Designer</h1>
+      <p class="sub">Adjust latent dimensions <span id="rangeLabel"><code>Dim0</code> to <code>Dim15</code></span>, then click <b>Generate Design</b>.</p>
+
+      <div id="rows" class="rows"></div>
+
+      <div class="actions">
+        <button class="btn-generate" id="btnGenerate">Generate Design</button>
+        <button class="btn-reset" id="btnReset">Reset</button>
+        <button class="btn-random" id="btnRandom">Randomize</button>
+        <button class="btn-download" id="btnDownload">Download PNG</button>
+      </div>
+      <div class="status" id="status">Ready.</div>
+    </section>
+
+    <section class="card">
+      <div class="preview">
+        <img id="previewImage" alt="Generated sneaker" />
+        <div id="placeholder" class="placeholder">No image yet. Click <b>Generate Design</b>.</div>
+      </div>
+      <div class="meta" id="meta"></div>
+    </section>
+  </div>
+
+  <script>
+    const rowsContainer = document.getElementById("rows");
+    const statusEl = document.getElementById("status");
+    const previewImage = document.getElementById("previewImage");
+    const placeholder = document.getElementById("placeholder");
+    const metaEl = document.getElementById("meta");
+
+    const controls = [];
+    let dimCount = 16;
+
+    function clamp(v, min, max) {
+      return Math.max(min, Math.min(max, v));
+    }
+
+    function createControlRow(dimIndex) {
+      const row = document.createElement("div");
+      row.className = "row";
+
+      const label = document.createElement("div");
+      label.className = "dim-label";
+      label.textContent = `Dim ${dimIndex}`;
+
+      const slider = document.createElement("input");
+      slider.type = "range";
+      slider.min = "-3.5";
+      slider.max = "3.5";
+      slider.step = "0.1";
+      slider.value = "0";
+
+      const input = document.createElement("input");
+      input.type = "number";
+      input.min = "-3.5";
+      input.max = "3.5";
+      input.step = "0.1";
+      input.value = "0";
+
+      slider.addEventListener("input", () => {
+        input.value = slider.value;
+      });
+
+      input.addEventListener("input", () => {
+        const value = Number(input.value || 0);
+        const fixed = clamp(value, -3.5, 3.5);
+        slider.value = String(fixed);
+      });
+
+      row.appendChild(label);
+      row.appendChild(slider);
+      row.appendChild(input);
+      rowsContainer.appendChild(row);
+
+      controls.push({ slider, input });
+    }
+
+    function buildControls(count) {
+      controls.length = 0;
+      rowsContainer.innerHTML = "";
+      for (let i = 0; i < count; i++) {
+        createControlRow(i);
+      }
+    }
+
+    function getDims() {
+      return controls.map(({ slider }) => Number(slider.value));
+    }
+
+    function setDims(values) {
+      controls.forEach(({ slider, input }, idx) => {
+        const value = Number(values[idx] ?? 0);
+        slider.value = String(value);
+        input.value = String(value);
+      });
+    }
+
+    async function generateDesign() {
+      const dims = getDims();
+      statusEl.textContent = "Generating...";
+
+      try {
+        const response = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ dims }),
+        });
+
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error || "Generation failed");
+        }
+
+        const imageSrc = `data:image/png;base64,${payload.image_base64}`;
+        previewImage.src = imageSrc;
+        previewImage.style.display = "block";
+        placeholder.style.display = "none";
+        metaEl.textContent = `Checkpoint: ${payload.checkpoint} | Latent dim: ${payload.latent_dim}`;
+        statusEl.textContent = "Design generated.";
+      } catch (error) {
+        statusEl.textContent = `Error: ${error.message}`;
+      }
+    }
+
+    function resetDims() {
+      setDims(new Array(dimCount).fill(0));
+      statusEl.textContent = "All dimensions reset to 0.";
+    }
+
+    function randomizeDims() {
+      const values = [];
+      for (let i = 0; i < dimCount; i++) {
+        const v = (Math.random() * 6 - 3).toFixed(1);
+        values.push(Number(v));
+      }
+      setDims(values);
+      statusEl.textContent = "Random values applied.";
+    }
+
+    function downloadImage() {
+      if (!previewImage.src) {
+        statusEl.textContent = "No generated image to download.";
+        return;
+      }
+      const a = document.createElement("a");
+      a.href = previewImage.src;
+      a.download = "custom_sneaker_interactive.png";
+      a.click();
+      statusEl.textContent = "Image downloaded.";
+    }
+
+    document.getElementById("btnGenerate").addEventListener("click", generateDesign);
+    document.getElementById("btnReset").addEventListener("click", resetDims);
+    document.getElementById("btnRandom").addEventListener("click", randomizeDims);
+    document.getElementById("btnDownload").addEventListener("click", downloadImage);
+
+    async function init() {
+      try {
+        const response = await fetch("/api/meta");
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error || "Failed to load model metadata");
+        }
+
+        dimCount = Number(payload.latent_dim || 16);
+        if (!Number.isFinite(dimCount) || dimCount < 1) {
+          dimCount = 16;
+        }
+
+        buildControls(dimCount);
+        document.getElementById("rangeLabel").innerHTML = `<code>Dim0</code> to <code>Dim${dimCount - 1}</code>`;
+        metaEl.textContent = `Checkpoint: ${payload.checkpoint} | Latent dim: ${dimCount}`;
+      } catch (error) {
+        statusEl.textContent = `Metadata warning: ${error.message}. Fallback to Dim0-Dim15.`;
+        dimCount = 16;
+        buildControls(dimCount);
+      }
+
+      generateDesign();
+    }
+
+    init();
+  </script>
+</body>
+</html>
