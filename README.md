@@ -1,110 +1,138 @@
-# Sneaker-Design-VAE
+# New Sneaker Designs Generation from Existing Design Data
 
-New Sneaker Designs Generation from Existing Design Data using a Beta-VAE workflow.
+**Live Demo Website**: [http://dfuaix9nq1.com/](http://dfuaix9nq1.com/)
 
-## Project Overview
+This repository presents a full notebook-driven workflow for sneaker image generation using a Beta-VAE model, from preprocessing to interactive custom design.
 
-This repository contains:
-- A processed sneaker image dataset (`processed_sneakers_64x64/`).
-- A Beta-VAE training and generation pipeline.
-- A modular notebook workflow split into five focused stages.
+## Notebook Navigation
 
-The original all-in-one notebook (`BayesML_Final_Project.ipynb`) is still kept for reference.  
-The recommended workflow is the new modular notebook sequence under `notebooks/`.
+1. [01 - Data Preprocessing](#01---data-preprocessing)
+2. [03 - Baseline Training (MSE + Fixed Beta)](#03---baseline-training-mse--fixed-beta)
+3. [04 - Improved Training (BCE + KL Annealing)](#04---improved-training-bce--kl-annealing)
+4. [04 - Latent Analysis with Rich Visualizations](#04---latent-analysis-with-rich-visualizations)
+5. [05 - Interactive Custom Sneaker Design](#05---interactive-custom-sneaker-design)
 
-## Repository Structure
+---
 
-```text
-Sneaker-Design-VAE/
-├── BayesML_Final_Project.ipynb                  # Original monolithic notebook (legacy)
-├── README.md
-├── environment.yml                              # Conda environment definition
-├── notebooks/
-│   ├── 01_data_preprocessing.ipynb
-│   ├── 02_baseline_training.ipynb
-│   ├── 03_improved_training_with_annealing.ipynb
-│   ├── 04_latent_analysis_rich_visualization.ipynb
-│   └── 05_custom_design_interactive.ipynb
-└── processed_sneakers_64x64/                    # Processed 64x64 sneaker images
-```
+## 01 - Data Preprocessing
 
-## Environment Setup
+**Notebook**: `notebooks/01_data_preprocessing.ipynb`
 
-Create and activate the environment:
+### Goal
+Convert raw sneaker images into a clean model-ready dataset (`64 x 64`, RGB, white background, square format), while preserving brand/class folder structure.
 
-```bash
-conda env create -f environment.yml
-conda activate sneaker-design-vae
-```
+### Workflow Summary
+- Read original raw images recursively.
+- Convert each image to RGB.
+- Apply center padding to square white canvas.
+- Resize to `64 x 64`.
+- Save processed output under the unified data directory.
 
-Register the kernel (optional but recommended):
+### Key Result
+**[Content to be added here.]**
 
-```bash
-python -m ipykernel install --user --name sneaker-design-vae --display-name "Python (sneaker-design-vae)"
-```
+---
 
-Quick import check:
+## 03 - Baseline Training (MSE + Fixed Beta)
 
-```bash
-python -c "import torch, torchvision; print(torch.__version__, torchvision.__version__)"
-```
+**Notebook**: `notebooks/02_baseline_training.ipynb`
 
-To reduce warning noise in notebooks, this environment also sets:
-- `PYTHONWARNINGS=ignore`
-- `KMP_WARNINGS=0`
-- `MKL_VERBOSE=0`
+### Goal
+Train the first Beta-VAE baseline using:
+- MSE reconstruction loss
+- Fixed beta regularization
 
-Note: `Intel MKL WARNING` messages are emitted by native libraries, so they are not always suppressed by Python's `warnings.filterwarnings`.
+### Training Output
+![Baseline Training Curve](docs/images/02_baseline_training_output_01.png)
 
-## Notebook Workflow (Run in Order)
+### Observations
+**[Content to be added here.]**
 
-1. `notebooks/01_data_preprocessing.ipynb`  
-   Converts raw sneaker images to RGB, square white-background format, then resizes to `64x64`.
+---
 
-2. `notebooks/02_baseline_training.ipynb`  
-   Trains baseline Beta-VAE with MSE reconstruction loss and fixed beta (`beta=4.0`).
+## 04 - Improved Training (BCE + KL Annealing)
 
-3. `notebooks/03_improved_training_with_annealing.ipynb`  
-   Trains improved Beta-VAE with BCE reconstruction and KL annealing schedule.
+**Notebook**: `notebooks/03_improved_training_with_annealing.ipynb`
 
-4. `notebooks/04_latent_analysis_rich_visualization.ipynb`  
-   Loads trained checkpoint and performs richer latent analysis, including reconstruction grids, traversal, latent histograms, latent correlation heatmap, KL-per-dimension contributions, decoder sensitivity bars, random prior sampling, and interpolation.
+### Goal
+Improve generation quality and latent behavior using:
+- BCE reconstruction loss
+- KL annealing schedule (dynamic beta)
 
-5. `notebooks/05_custom_design_interactive.ipynb`  
-   Provides an interactive custom design panel with synced sliders + numeric inputs for `Dim0` to `Dim15` (or up to model latent dimension), then decodes a new sneaker design on button click.
+### Training Output
+![Improved Training Curve](docs/images/03_improved_training_with_annealing_output_01.png)
 
-## Generated Artifacts
+### Observations
+**[Content to be added here.]**
 
-During notebook runs, outputs are written to:
-- `artifacts/checkpoints/beta_vae_baseline.pt`
-- `artifacts/checkpoints/beta_vae_improved.pt`
-- `artifacts/generated/custom_sneaker.png`
-- `artifacts/generated/custom_sneaker_interactive.png`
+---
 
-## HTML Interactive Designer
+## 04 - Latent Analysis with Rich Visualizations
 
-You can run a browser-based interactive designer (same core behavior as notebook `05`) with:
+**Notebook**: `notebooks/04_latent_analysis_rich_visualization.ipynb`
 
-```bash
-python web/design_server.py --host 127.0.0.1 --port 8000
-```
+### Goal
+Analyze what each latent dimension learns and how controllable the generator is.
 
-Then open:
+### Visual Results
 
-```text
-http://127.0.0.1:8000
-```
+#### Reconstruction Quality (Input vs Reconstruction)
+![Latent Analysis Output 1](docs/images/04_latent_analysis_rich_visualization_output_01.png)
 
-The page provides:
-- Sliders + numeric inputs for `Dim0` to `Dim15` (or up to model latent dimension)
-- `Generate Design`, `Reset`, `Randomize`, and `Download PNG` buttons
-- Model-backed image generation through `/api/generate`
+#### Latent Traversal Grid
+![Latent Analysis Output 2](docs/images/04_latent_analysis_rich_visualization_output_02.png)
 
-## Notes
+#### Latent Mean Distribution
+![Latent Analysis Output 3](docs/images/04_latent_analysis_rich_visualization_output_03.png)
 
-- The preprocessing notebook requires access to the original raw dataset path.  
-  Update `RAW_DATA_DIR` in `01_data_preprocessing.ipynb` before running.
-- Device selection supports Apple MPS, CUDA, and CPU (automatic fallback).
-- If you only need generation, ensure at least one trained checkpoint exists (`baseline` or `improved`).
-- If `torchvision` is missing after environment creation, run:
-  `conda install -n sneaker-design-vae -c pytorch torchvision=0.17.2`
+#### Latent Correlation Heatmap
+![Latent Analysis Output 4](docs/images/04_latent_analysis_rich_visualization_output_04.png)
+
+#### KL Contribution per Dimension
+![Latent Analysis Output 5](docs/images/04_latent_analysis_rich_visualization_output_05.png)
+
+#### Dimension Impact Bar
+![Latent Analysis Output 6](docs/images/04_latent_analysis_rich_visualization_output_06.png)
+
+#### Random Prior Samples
+![Latent Analysis Output 7](docs/images/04_latent_analysis_rich_visualization_output_07.png)
+
+#### Latent Interpolation
+![Latent Analysis Output 8](docs/images/04_latent_analysis_rich_visualization_output_08.png)
+
+### Insights
+**[Content to be added here.]**
+
+---
+
+## 05 - Interactive Custom Sneaker Design
+
+**Notebook**: `notebooks/05_custom_design_interactive.ipynb`  
+**Web App**: [http://dfuaix9nq1.com/](http://dfuaix9nq1.com/)
+
+### Goal
+Provide direct user control over latent dimensions (`Dim0` to `Dim15`) to generate custom sneaker designs interactively.
+
+### Features
+- Slider + numeric input for each latent dimension.
+- One-click generation.
+- Reset / randomize options.
+- HTML deployment with backend model inference.
+
+### Example Generated Design
+![Custom Sneaker Example](artifacts/generated/custom_sneaker.png)
+
+### Demo Notes
+**[Content to be added here.]**
+
+---
+
+## Project Conclusion
+
+- End-to-end pipeline is fully notebook-based.
+- Model is trained, analyzed, and deployed to a live interactive website.
+- The system supports both research-style latent inspection and practical controllable design generation.
+
+### Final Reflection
+**[Content to be added here.]**
+
