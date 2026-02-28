@@ -1,4 +1,12 @@
 # New Sneaker Designs Generation from Existing Design Data
+Implementing VAE to learn from existing popular sneaker designs for the fashion patterns, generating new novel shoe design candidates.
+
+## Collaborators
+- Ethan Wang
+- Steven Si
+- Runyu Yang
+- Danqing Chen
+- Wenbo Zhao
 
 **Live Demo Website**: [http://dfuaix9nq1.com/](http://dfuaix9nq1.com/)
 
