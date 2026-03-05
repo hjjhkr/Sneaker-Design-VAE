@@ -67,13 +67,44 @@ Improve generation quality and latent behavior using:
 - BCE reconstruction loss
 - KL annealing schedule (dynamic beta)
 
+### What Changed vs Baseline (Three Core Differences)
+
+1. **Initialization from the baseline model**
+- The improved model is trained by loading the baseline checkpoint first, instead of starting from random weights.
+- This means Stage 2 training starts from a model that already reconstructs sneaker structure reasonably well.
+- Practical effect: faster convergence and more stable improvement.
+
+2. **KL annealing (dynamic beta in ELBO)**
+- **a) ELBO and what beta means**
+  - VAE objective (minimized as loss):
+  - $\mathcal{L} = \mathcal{L}_{recon} + \beta \cdot D_{KL}(q_\phi(z|x)\,\|\,p(z))$
+  - Here, $\beta$ controls the strength of latent regularization:
+  - Larger $\beta$ enforces a more organized latent space, but can hurt reconstruction quality.
+- **b) How we implemented it**
+  - Instead of using a fixed $\beta$ from epoch 1, we linearly increase $\beta$ from `0` to `2.0` during the first `10` epochs, then keep it at `2.0`.
+  - This is the `KL annealing` schedule used in Notebook 03.
+- **c) Why this helps**
+  - Early epochs focus more on reconstruction (easier optimization).
+  - Later epochs gradually enforce latent regularization.
+  - Net result: better balance between visual quality and latent controllability.
+
+3. **BCE reconstruction loss instead of MSE**
+- **a) BCE vs MSE**
+  - **MSE** penalizes squared pixel distance and often favors smoother outputs.
+  - **BCE** treats normalized pixels as probabilities and penalizes mismatch with cross-entropy.
+- **b) Why BCE can be better here**
+  - For normalized shoe images in `[0, 1]` with sigmoid output, BCE typically preserves local contrast and edge sharpness better.
+  - Practical effect in this project: cleaner contours and visually sharper sneaker details.
+
 ### Training Output
 ![Improved Training Curve](docs/images/03_01.png)
 
 ![Improved Training Curve](docs/images/03_02.png)
 
 ### Observations
-**[Content to be added here.]**
+- The first figure isolates **KL Loss + Beta**, making annealing behavior easy to explain.
+- The second figure focuses on **Total/Reconstruction Loss + Beta**, showing optimization trend without KL scale compression.
+- Together, these plots show both optimization stability and regularization progression.
 
 ---
 
