@@ -68,7 +68,9 @@ Improve generation quality and latent behavior using:
 - KL annealing schedule (dynamic beta)
 
 ### Training Output
-![Improved Training Curve](docs/images/03_improved_training_with_annealing_output_01.png)
+![Improved Training Curve](docs/images/03_01.png)
+
+![Improved Training Curve](docs/images/03_02.png)
 
 ### Observations
 **[Content to be added here.]**
