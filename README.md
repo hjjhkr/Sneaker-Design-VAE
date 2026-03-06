@@ -41,14 +41,48 @@ Convert raw sneaker images into a clean model-ready dataset (`64 x 64`, RGB, whi
 
 ---
 
-## 02 - Baseline Training (MSE + Fixed Beta)
+## 02 - Baseline Training (Beta-VAE)
 
 **Notebook**: `notebooks/02_baseline_training.ipynb`
 
-### Goal
-Train the first Beta-VAE baseline using:
-- MSE reconstruction loss
-- Fixed beta regularization
+## 🧠 The Philosophy of Generative Models
+
+For many modalities, the data we observe is determined by unseen abstract variables, denoted as latent variable $z$. The best intuition for this is **Plato’s Allegory of the Cave**: prisoners see only 2D shadows (our observed data, like images of sneakers) cast by unseen 3D objects (the latent variables, like color, shape, and size). While we cannot directly observe these hidden factors, generative models allow us to infer and approximate them. 
+
+**The Compression Caveat:** Unlike the allegory where the true objects are higher-dimensional, in generative modeling, we aim to learn *lower-dimensional* latent representations. This acts as a powerful form of compression, filtering out noise to uncover the true, semantically meaningful structure underlying the observations.
+
+---
+
+## VAE vs. $\beta$-VAE: Achieving Controlled Generation
+
+To understand our architectural choices, we must look at the optimization objectives of Variational Autoencoders (VAEs).
+
+### 1. The Standard VAE & Feature Entanglement
+A standard VAE optimizes the Evidence Lower Bound (ELBO), which balances two losses:
+
+$$\mathcal{L} = \text{Reconstruction Loss} + D_{KL}(q_\phi(z|x) || p(z))$$
+
+- **Reconstruction Loss:** Ensures the generated image closely resembles the input.
+- **KL Divergence:** Regularizes the latent space to approximate a standard normal distribution.
+
+**The Problem:** In a standard VAE, to perfectly minimize reconstruction error, the model often takes shortcuts. It mixes different attributes (e.g., shoe color, sole thickness, ankle height) together across the latent dimensions. This is known as **Feature Entanglement**. If you try to modify the shoe color, the model might accidentally change it from a low-top to a high-top.
+
+### 2. The $\beta$-VAE Improvement
+$\beta$-VAE introduces a simple but highly effective hyperparameter, $\beta$, to heavily penalize the KL divergence term:
+
+$$\mathcal{L} = \text{Reconstruction Loss} + \beta \cdot D_{KL}(q_\phi(z|x) || p(z))$$
+
+By setting $\beta > 1$ (e.g., $\beta = 2.0$ in our final model), we impose a strict **Information Bottleneck**. 
+
+### 3. Why This Excels at Sneaker Design
+The heavy KL penalty forces the posterior distribution to closely match the prior (a standard normal distribution with a diagonal covariance matrix). To survive this bottleneck and still reconstruct the image successfully, the model *must* discover statistically independent generative factors. 
+
+It naturally **disentangles** the features. Instead of a messy, tangled latent space, $\beta$-VAE organizes the data into an independent, human-interpretable control console. Based on our latent traversal experiments, this means:
+- **Dim 8** independently controls the geometric shape (low-top vs. high-top).
+- **Dim 9** independently controls the main body color.
+- **Dim 4 & 5** independently control the sole details.
+
+Ultimately, $\beta$-VAE transforms a standard random image generator into a **precise, controllable design tool**.
 
 ### Training Output
 ![Baseline Training Curve](docs/images/02_baseline_training_output_01.png)
