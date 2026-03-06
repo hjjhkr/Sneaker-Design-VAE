@@ -45,13 +45,12 @@ Convert raw sneaker images into a clean model-ready dataset (`64 x 64`, RGB, whi
 
 **Notebook**: `notebooks/02_baseline_training.ipynb`
 
-## 🧠 The Philosophy of Generative Models
+## The Philosophy of Generative Models
 
 For many modalities, the data we observe is determined by unseen abstract variables, denoted as latent variable $z$. The best intuition for this is **Plato’s Allegory of the Cave**: prisoners see only 2D shadows (our observed data, like images of sneakers) cast by unseen 3D objects (the latent variables, like color, shape, and size). While we cannot directly observe these hidden factors, generative models allow us to infer and approximate them. 
 
 **The Compression Caveat:** Unlike the allegory where the true objects are higher-dimensional, in generative modeling, we aim to learn *lower-dimensional* latent representations. This acts as a powerful form of compression, filtering out noise to uncover the true, semantically meaningful structure underlying the observations.
-
----
+![An_Illustration_of_The_Allegory_of_the_Cave,_from_Plato’s_Republic](https://github.com/user-attachments/assets/7eb90188-b285-4e78-bb2a-e5c2bbe5f51b)
 
 ## VAE vs. $\beta$-VAE: Achieving Controlled Generation
 
@@ -87,8 +86,6 @@ Ultimately, $\beta$-VAE transforms a standard random image generator into a **pr
 ### Training Output
 ![Baseline Training Curve](docs/images/02_baseline_training_output_01.png)
 
-### Observations
-**[Content to be added here.]**
 
 ---
 
