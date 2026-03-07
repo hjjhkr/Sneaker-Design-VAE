@@ -109,7 +109,7 @@ Improve generation quality and latent behavior using:
 - **a) ELBO and what beta means**
   - VAE objective (minimized as loss):
 
-$$\mathcal{L} = \text{Reconstruction Loss} + D_{KL}(q_\phi(z|x) || p(z))$$
+$$\mathcal{L} = \text{Reconstruction Loss} + \beta \cdot D_{KL}(q_\phi(z|x) || p(z))$$
 
   - Here, $\beta$ controls the strength of latent regularization:
   - Larger $\beta$ enforces a more organized latent space, but can hurt reconstruction quality.
