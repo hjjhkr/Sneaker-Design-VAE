@@ -108,7 +108,7 @@ Improve generation quality and latent behavior using:
 2. **KL annealing (dynamic beta in ELBO)**
 - **a) ELBO and what beta means**
   - VAE objective (minimized as loss):
-  - 
+
 $$\mathcal{L} = \text{Reconstruction Loss} + D_{KL}(q_\phi(z|x) || p(z))$$
 
   - Here, $\beta$ controls the strength of latent regularization:
