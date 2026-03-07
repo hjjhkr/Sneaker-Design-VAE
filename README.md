@@ -125,6 +125,9 @@ $$\mathcal{L} = \text{Reconstruction Loss} + \beta \cdot D_{KL}(q_\phi(z|x) || p
 - **a) BCE vs MSE**
   - **MSE** penalizes squared pixel distance and often favors smoother outputs.
   - **BCE** treats normalized pixels as probabilities and penalizes mismatch with cross-entropy.
+
+$$\sum_{i=1}^{D}\left[x_i \log(\hat{x}_i) + (1-x_i)\log(1-\hat{x}_i)\right]$$
+
 - **b) Why BCE can be better here**
   - For normalized shoe images in `[0, 1]` with sigmoid output, BCE typically preserves local contrast and edge sharpness better.
   - Practical effect in this project: cleaner contours and visually sharper sneaker details.
