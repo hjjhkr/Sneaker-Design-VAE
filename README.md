@@ -93,11 +93,6 @@ Ultimately, $\beta$-VAE transforms a standard random image generator into a **pr
 
 **Notebook**: `notebooks/03_improved_training_with_annealing.ipynb`
 
-### Goal
-Improve generation quality and latent behavior using:
-- BCE reconstruction loss
-- KL annealing schedule (dynamic beta)
-
 ### What Changed vs Baseline (Three Core Differences)
 
 1. **Initialization from the baseline model**
