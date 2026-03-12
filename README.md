@@ -151,20 +151,52 @@ Analyze what each latent dimension learns and how controllable the generator is.
 #### Reconstruction Quality (Input vs Reconstruction)
 ![Latent Analysis Output 1](docs/images/04_latent_analysis_rich_visualization_output_01.png)
 
+To evaluate whether the VAE learned meaningful representations, we compare the original sneaker images with their reconstructed outputs from the decoder.
+
+The reconstructions preserve the overall shape, color patterns, and silhouette of the sneakers, indicating that the encoder successfully compresses key visual information into the latent representation.
+
+Although the reconstructed images appear slightly smoother than the originals, this is typical for VAE models since they learn probabilistic representations rather than memorizing exact pixels. Overall, the results show that the model captures the main structural features of sneaker designs.
+
 #### Latent Traversal Grid
 ![Latent Analysis Output 2](docs/images/04_latent_analysis_rich_visualization_output_02.png)
+
+To analyze how individual latent dimensions affect the generated designs, we perform latent traversal experiments by varying one dimension at a time while keeping the others fixed.
+
+The generated sneakers show smooth visual changes across columns. In several cases, the sneaker body color gradually shifts between darker and lighter tones.
+
+These results indicate that the latent space is continuous and that different dimensions capture distinct design attributes, suggesting partially disentangled representations learned by the β-VAE.
 
 #### Latent Mean Distribution
 ![Latent Analysis Output 3](docs/images/04_latent_analysis_rich_visualization_output_03.png)
 
+To examine whether the learned latent space follows the expected prior distribution, we analyze the distribution of latent means for each dimension across the dataset.
+
+Most dimensions show distributions centered around zero and roughly resembling a Gaussian shape, which aligns with the standard normal prior enforced by the VAE objective.
+
+These results indicate that the latent space is properly regularized and structured for generative sampling.
+
 #### Latent Correlation Heatmap
 ![Latent Analysis Output 4](docs/images/04_latent_analysis_rich_visualization_output_04.png)
+
+To examine whether the latent representations are disentangled, we compute the correlation matrix of the latent mean values across all dimensions.
+
+Most off-diagonal values in the heatmap are close to zero, indicating weak correlations between different latent dimensions.
+
+This suggests that the β-VAE encourages a relatively disentangled latent space, where each dimension captures more independent aspects of sneaker design.
 
 #### KL Contribution per Dimension
 ![Latent Analysis Output 5](docs/images/04_latent_analysis_rich_visualization_output_05.png)
 
+This plot shows the average KL divergence contribution of each latent dimension.
+
+Dimensions with higher KL values carry more information about the data distribution, indicating that they play a more active role in encoding sneaker features within the latent space.
+
 #### Dimension Impact Bar
 ![Latent Analysis Output 6](docs/images/04_latent_analysis_rich_visualization_output_06.png)
+
+This figure measures how much the generated image changes when a single latent dimension is modified.
+
+Dimensions with larger impact values cause stronger visual changes in the generated sneakers, suggesting that these dimensions have greater influence on the final design.
 
 #### Random Prior Samples
 ![Latent Analysis Output 7](docs/images/04_latent_analysis_rich_visualization_output_07.png)
@@ -172,8 +204,12 @@ Analyze what each latent dimension learns and how controllable the generator is.
 #### Latent Interpolation
 ![Latent Analysis Output 8](docs/images/04_latent_analysis_rich_visualization_output_08.png)
 
+This figure shows interpolation between two latent representations. By gradually moving between two points in the latent space, the model generates a smooth transition between sneaker designs.
+
+The gradual change in color and structure indicates that the latent space is continuous and well-structured, allowing meaningful transformations between different designs.
+
 ### Insights
-**[Content to be added here.]**
+Overall, the results show that the β-VAE learns a structured and meaningful latent space for sneaker design generation. The model reconstructs realistic sneakers, while latent traversal reveals that different dimensions control interpretable visual attributes. The latent distributions and correlation analysis indicate a well-regularized and relatively disentangled representation. In addition, KL contribution and dimension impact highlight which dimensions play a larger role in shaping the generated designs. Finally, interpolation results confirm that the latent space is continuous, enabling smooth transitions between different sneaker styles.
 
 ---
 
