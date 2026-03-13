@@ -41,7 +41,7 @@ Convert raw sneaker images into a clean model-ready dataset (`64 x 64`, RGB, whi
 - Resize to `64 x 64`.
 - Save processed output under the unified data directory.
 
-### Key Result
+### Main Process
 
 A dataset audit was conducted before preprocessing to evaluate image quality and consistency.
 
