@@ -5,7 +5,7 @@ Implementing VAE to learn from existing popular sneaker designs for the fashion 
 - Ethan Wang
 - Steven Si
 - Runyu Yang
-- Danqing Chen
+- Diana Chen
 - Wenbo Zhao
 
 **Web App**: [http://dfuaix9nq1.com/](http://dfuaix9nq1.com/)
