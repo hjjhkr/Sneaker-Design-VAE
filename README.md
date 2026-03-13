@@ -21,6 +21,11 @@ This repository presents a full notebook-driven workflow for sneaker image gener
 5. [05 - Interactive Custom Sneaker Design](#05---interactive-custom-sneaker-design)
 
 ---
+## 00 - Project Overview
+
+This project uses the UT Zappos50K dataset, which contains over 50,000 catalog images of shoes collected from Zappos.com. We focus on a subset of 12,856 sneaker and athletic shoe images, which provide relatively consistent product photos with clean backgrounds and standardized viewpoints.
+
+The goal of this project is to learn the visual structure of sneaker designs using a β-Variational Autoencoder (β-VAE). The objective is to learn a compact latent representation of sneaker images using a β-Variational Autoencoder (β-VAE). This representation captures underlying visual structure such as shape, color, and style. By sampling from the learned latent space, the model can generate new sneaker designs.
 
 ## 01 - Data Preprocessing
 
@@ -37,7 +42,37 @@ Convert raw sneaker images into a clean model-ready dataset (`64 x 64`, RGB, whi
 - Save processed output under the unified data directory.
 
 ### Key Result
-**[Content to be added here.]**
+
+A dataset audit was conducted before preprocessing to evaluate image quality and consistency.
+
+Raw Dataset Statistics
+
+| Metric | Value |
+|------|------|
+| Total sneaker images | 12,856 |
+| Readable images | 12,856 |
+| Corrupted images | 0 |
+| Average image size | 136 × 102 |
+| Average aspect ratio | 1.33 |
+| Color mode distribution | RGB (100%) |
+
+The raw images vary in resolution and aspect ratio, making standardization necessary before model training.
+
+During preprocessing, each image is first padded with a white background to create a square canvas, ensuring that the original shoe proportions are preserved. The images are then resized to 64 × 64 resolution and converted to RGB format.
+
+#### Preprocessing example
+| Raw Image |  | Padded Image |  | Resized Image |
+|-----------|---|--------------|---|---------------|
+| <p align="center"><img src="https://github.com/user-attachments/assets/8283b35e-043f-4c71-87f6-c69efababf61" width="140"><br>Raw Image (136×102)</p> | ➜ | <p align="center"><img src="https://github.com/user-attachments/assets/c57efa1c-376b-4a86-a889-1fa2db8a26c8" width="140"><br>Padded Image (136×136)</p> | ➜ | <p align="center"><img src="https://github.com/user-attachments/assets/e5236032-bee8-4952-9505-aae21eff51d3" width="70"><br>Resized Image (64×64)</p> |
+
+
+Processed Dataset Characteristics
+| Metric | Value |
+|------|------|
+| Processed images | 12,856 |
+| Image resolution | 64 × 64 |
+| Aspect ratio | 1.0 |
+| Color mode | RGB |
 
 ---
 
